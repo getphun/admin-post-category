@@ -1,0 +1,87 @@
+<?php $this->partial('shared/header'); ?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    Total result: <?= number_format($total, 0, '.','.'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="page-header">
+                <?php if($this->can_i->create_post_category): ?>
+                <a class="btn btn-primary pull-right" href="<?= $this->router->to('adminPostCategoryEdit', ['id'=>0], ['ref'=>$reff]) ?>">Create New</a>
+                <?php endif; ?>
+                <h3>Post Categories</h3>
+            </div>
+            
+            <?php if($categories): ?>
+            <?php
+                $can_delete     = $this->can_i->remove_post_category;
+                $can_edit       = $this->can_i->update_post_category;
+            ?>
+            
+            <?php foreach($parentizes as $parent => $list): ?>
+                <?php if($parent && isset($categories[$parent])): ?>
+                <h3><?= $categories[$parent]->name ?></h3>
+                <?php endif; ?>
+            <div class="list-group">
+                <?php foreach($list as $category): ?>
+                <div class="list-group-item">
+                    
+                    <div class="btn-group btn-group-xs pull-right" role="group">
+                        
+                        <?php if($can_edit): ?>
+                        <a href="<?= $this->router->to('adminPostCategoryEdit', ['id'=>$category->id], ['ref'=>$reff]) ?>" class="btn btn-default" title="Edit">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                        <?php endif; ?>
+                        
+                        <button id="category-<?= $category->id ?>" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default btn-xs">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="category-<?= $category->id ?>">
+                            <li>
+                                <a href="<?= $category->page ?>">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i> View page
+                                </a>
+                            </li>
+                        <?php if($can_delete): ?>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="<?= $this->router->to('adminPostCategoryRemove', ['id'=>$category->id], ['ref'=>$reff]) ?>" data-confirm="Delete Confirmation" data-confirm-message="Are you sure want to delete this post category? This action can't be undone." title="Delete" aria-label="Delete">
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        </ul>
+                        
+                    </div>
+
+                    <h4 class="list-group-item-heading">
+                        <?= $category->name ?>
+                        <small><?= $category->slug ?></small>
+                    </h4>
+                    
+                    <p class="list-group-item-text small">
+                        <span title="Created"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> <?= date('M d, Y', strtotime($category->created)) ?></span>
+                    </p>
+                    
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endforeach; ?>
+            
+            <style>.breadcrumb{ margin-top: 5px; margin-bottom: 5px; padding: 5px 10px;}</style>
+            <?php
+                if($pagination)
+                    $this->partial('shared/pagination', ['pagination'=>$pagination]);
+            ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php $this->partial('shared/footer'); ?>
