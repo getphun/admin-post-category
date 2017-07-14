@@ -80,6 +80,7 @@ class CategoryController extends \AdminController
             if(false === ($id = PCategory::create($object)))
                 throw new \Exception(PCategory::lastError());
         }else{
+            $object->updated = null;
             if(false === PCategory::set($object, $id))
                 throw new \Exception(PCategory::lastError());
         }
