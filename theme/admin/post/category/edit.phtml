@@ -16,9 +16,17 @@
     <div class="row">
         <div class="col-md-9">
             <div class="row">
-                <div class="col-md-12">
+                <?php $col = module_exists('post-canal') && $this->can_i->read_post_canal ? '8' : '12'; ?>
+                <div class="col-md-<?= $col ?>">
                     <?= $this->form->field('name'); ?>
                 </div>
+                <?php if($col == 8): ?>
+                    <div class="col-md-4">
+                        <?= $this->form->field('canal', $canals); ?>
+                    </div>
+                <?php else: ?>
+                    <input type="hidden" id="field-canal" value="<?= $object->canal ?? '0' ?>">
+                <?php endif; ?>
             </div>
             <div class="row">
                 <div class="col-md-8">

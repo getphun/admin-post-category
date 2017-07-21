@@ -9,6 +9,7 @@
 namespace AdminPostCategory\Controller;
 use PostCategory\Model\PostCategory as PCategory;
 use PostCategory\Model\PostCategoryChain as PCChain;
+use PostCanal\Model\PostCanal as PCanal;
 
 class CategoryController extends \AdminController
 {
@@ -40,6 +41,10 @@ class CategoryController extends \AdminController
         $params['title'] = 'Create New Post Category';
         $params['ref'] = $this->req->getQuery('ref') ?? $this->router->to('adminPostCategory');
         $params['categories'] = [];
+        $params['canals'] = [];
+        $params['jses'] = [
+            'js/admin-post-category.js'
+        ];
         
         if($id){
             $params['title'] = 'Edit Post Category';
@@ -66,10 +71,25 @@ class CategoryController extends \AdminController
             }
         }
         
-        array_unshift($params['categories'], (object)['id'=>0, 'name'=>'None', 'parent'=>0]);
+        array_unshift($params['categories'], (object)['id'=>0, 'name'=>'None', 'parent'=>0, 'canal'=>0]);
+        $params['object'] = $object;
+        
+        // get canal if exists
+        if(isset($object->canal) && $object->canal){
+            if(module_exists('post-canal') && $this->can_i->read_post_canal){
+                $canal = PCanal::get($object->canal, false);
+                if($canal)
+                    $params['canals'][$canal->id] = $canal->name;
+            }
+        }
         
         if(false === ($form=$this->form->validate('admin-post-category', $object)))
             return $this->respond('post/category/edit', $params);
+        
+        if(!module_exists('post-canal') || !$this->can_i->read_post_canal){
+            if(property_exists($form, 'canal'))
+                unset($form->canal);
+        }
         
         $object = object_replace($object, $form);
         

@@ -12,7 +12,9 @@ return [
     '__git' => 'https://github.com/getphun/admin-post-category',
     '__files' => [
         'modules/admin-post-category' => [ 'install', 'remove', 'update' ],
-        'theme/admin/post/category'   => [ 'install', 'remove', 'update' ]
+        'theme/admin/post/category'   => [ 'install', 'remove', 'update' ],
+        'theme/admin/form/post-category_radio-tree.phtml' => [ 'install', 'remove', 'update' ],
+        'theme/admin/static/js/admin-post-category.js'    => [ 'install', 'remove', 'update' ]
     ],
     '__dependencies' => [
         'admin',
@@ -89,8 +91,15 @@ return [
                     ]
                 ]
             ],
+            'canal' => [
+                'type'      => 'select-ajax',
+                'label'     => 'Canal',
+                'source'    => 'adminPostCanalFilter',
+                'rules'     => []
+                
+            ],
             'parent' => [
-                'type'      => 'radio-tree',
+                'type'      => 'post-category_radio-tree',
                 'label'     => 'Parent',
                 'rules'     => []
             ],
