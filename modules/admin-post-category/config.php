@@ -18,7 +18,8 @@ return [
     ],
     '__dependencies' => [
         'admin',
-        'post-category'
+        'post-category',
+        '/slug-history'
     ],
     '_services' => [],
     '_autoload' => [

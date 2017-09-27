@@ -51,7 +51,7 @@ class CategoryController extends \AdminController
             $object = PCategory::get($id, false);
             if(!$object)
                 return $this->show404();
-            $old = $object;
+            $old = clone $object;
         }else{
             $object = new \stdClass();
             $object->user = $this->user->id;
@@ -103,6 +103,10 @@ class CategoryController extends \AdminController
             $object->updated = null;
             if(false === PCategory::set($object, $id))
                 throw new \Exception(PCategory::lastError());
+            
+            // save slug changes
+            if(isset($object->slug) && $object->slug != $old->slug && module_exists('slug-history'))
+                $this->slug->create('post-category', $id, $old->slug, $object->slug);
         }
         
         $this->fire('post-category:'. $event, $object, $old);
